@@ -4,12 +4,7 @@
     public string Msg { get; set; } = "";
     public object? Data { get; set; }
     public static ApiResult Ok(object? d = null) =>
-      new ApiResult
-      {
-          Code = 200,
-          Msg = "success",
-          Data = d
-      };
+      new ApiResult   {  Code = 200,  Msg = "success",  Data = d };
     public static ApiResult Fail(int c, string m) =>
       new ApiResult { Code = c, Msg = m };
 }
