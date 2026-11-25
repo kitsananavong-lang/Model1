@@ -7,8 +7,16 @@ namespace Model1.Controllers
     public class RestaurantController(MapDbContext db) : ControllerBase
     {
         [HttpGet("system/api/restaurant/list")]
-        public ApiResult List()
+        public ApiResult List(int pageNam = 1 
+            ,int pageSize = 10 
+            ,string? restaurantName = null
+            ,string? restaurantType = null)
         {
+            var q = db.Restaurants.AsQueryable(); //ใช้เชื่อมกับตราง Restaurat
+            if (!string.IsNullOrEmpty(restaurantName))
+                q = q.Where(x => x.RestaurantName!.Contains(restaurantName));
+            if (!string.IsNullOrEmpty(restaurantType))
+                q = q.Where(x => x.RestaurantType == restaurantType);
             return ApiResult.Ok();
         }
     }
