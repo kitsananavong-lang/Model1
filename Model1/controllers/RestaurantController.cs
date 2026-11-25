@@ -28,10 +28,28 @@ namespace Model1.Controllers
             if (!string.IsNullOrEmpty(restaurantType))
                 // กรองเฉพาะร้านที่มีประเภทตรงกันเป๊ะๆ (คล้ายคำสั่ง = 'ประเภทร้าน' ใน SQL)
                 q = q.Where(x => x.RestaurantType == restaurantType);
-
+            int total = q.Count();
+            var rows = q.OrderBy(x => x.RestaurantId)
+                .Skip((pageNam - 1) * pageSize)
+                .Take(pageSize)
+                .ToArray()
+                .Select(x => new {
+                    x.RestaurantId,
+                    x.RestaurantName,
+                    x.Address,
+                    x.Phone,
+                    rating = x.Rating.ToString(),
+                    x.PriceRange,
+                    x.RestaurantType,
+                    x.ImageUrl,
+                    x.Description,
+                    distance = x.Distance.ToString(),
+                    businessType = "restaurant"
+                });
+        
             // ส่งผลลัพธ์กลับไปว่าทำงานสำเร็จ
             // *ข้อสังเกต: โค้ดส่วนนี้ยังไม่ได้สั่งดึงข้อมูลจริง (เช่น q.ToList()) และยังไม่ได้นำ pageNam, pageSize มาแบ่งหน้า รวมถึงยังไม่ได้แนบข้อมูลกลับไปใน ApiResult.Ok()
-            return ApiResult.Ok();
+            return ApiResult.Ok(new { total, rows });
         }
     }
 }
